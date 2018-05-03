@@ -1,0 +1,90 @@
+sharelatex:
+    restart: always
+    image: sharelatex/sharelatex
+    container_name: sharelatex
+    depends_on:
+        - mongo
+        - redis
+    privileged: true
+    expose:
+        - 80
+    links:
+        - mongo
+        - redis
+    volumes:
+        - /home/rancher/sharelatex_data:/var/lib/sharelatex
+        - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+        SHARELATEX_MONGO_URL: mongodb://mongo/sharelatex
+        SHARELATEX_REDIS_HOST: redis
+        SHARELATEX_APP_NAME: TNT ShareLaTeX
+
+        ## Set for SSL via nginx-proxy
+        VIRTUAL_HOST: latex.fehe.eu
+        LETSENCRYPT_HOST: latex.fehe.eu
+        LETSENCRYPT_EMAIL: science@fehe.eu
+
+        SHARELATEX_SITE_URL: https://latex.fehe.eu
+        SHARELATEX_NAV_TITLE: TNT ShareLaTeX
+        SHARELATEX_HEADER_IMAGE_URL: https://www.zuv.uni-freiburg.de/service/cd/cd-manual/images/logo/logo/logo-grundversion-01.png
+        SHARELATEX_ADMIN_EMAIL: science@fehe.eu
+
+        SHARELATEX_LEFT_FOOTER: '[{"text": "Powered by <a href=\"https://www.sharelatex.com\">ShareLaTeX</a> 2018"},{"text": "Run by <a href=\"https://tnt.uni-freiburg.de/\">Translational Neurotechnology Lab</a>"} ]'
+        # SHARELATEX_RIGHT_FOOTER: '[{"text": "Hello I am on the Right"} ]'
+
+        # SHARELATEX_EMAIL_FROM_ADDRESS: "team@sharelatex.com"
+
+        # SHARELATEX_EMAIL_SMTP_HOST: smtp.mydomain.com
+        # SHARELATEX_EMAIL_SMTP_PORT: 587
+        # SHARELATEX_EMAIL_SMTP_SECURE: false
+        # SHARELATEX_EMAIL_SMTP_USER: 
+        # SHARELATEX_EMAIL_SMTP_PASS: 
+        # SHARELATEX_EMAIL_SMTP_TLS_REJECT_UNAUTH: true
+        # SHARELATEX_EMAIL_SMTP_IGNORE_TLS: false
+        # SHARELATEX_CUSTOM_EMAIL_FOOTER: "<div>This system is run by department x </div>"
+
+        # SHARELATEX_TEMPLATES_USER_ID: "578773160210479700917ee5"
+
+        # SHARELATEX_PROXY_LEARN: "true"
+
+mongo:
+    restart: always
+    image: mongo
+    container_name: mongo
+    expose:
+        - 27017
+    volumes:
+        - /home/rancher/mongo_data:/data/db
+
+redis:
+    restart: always
+    image: redis
+    container_name: redis
+    expose:
+        - 6379
+    volumes:
+        - /home/rancher/redis_data:/data
+
+nginx-proxy:
+    restart: always
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /home/rancher/sharelatex_nginx/certs:/etc/nginx/certs:ro
+      - /home/rancher/sharelatex_nginx/conf:/etc/nginx/conf.d
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+
+letsencrypt-nginx-proxy-companion:
+    restart: always
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: letsencrypt-nginx-proxy-companion
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /home/rancher/sharelatex_nginx/certs:/etc/nginx/certs:rw

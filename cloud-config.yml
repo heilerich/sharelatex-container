@@ -1,0 +1,16 @@
+#cloud-config
+ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCr6W1FViZcS4BK+VR0Ie4pIdmRSkxhnoaAeyvXDQdfLAgSlyDcPSEU/+FS3l6rJ6usdfn6W3xOMZ+JRinxrSrMleauYBqWyUXSX2uq7+J8aV9XH+FbvIBFW4cE5EytBQPEpexWB8zdbN80OwdXqHuQy2D9qAxPItYezRubZUVBs6cZWtphECM9JYoe+gJypJIJNv6AfB+4S1Qw21mdMX2kgdl/WKdrRHmIyptzzhC6vN94GJYn+nXoFZ80evSZkAh9mH2CFnIXfxCDWS4XDVvz0ROdZbXUiwNhzxV/7eIJ1+2nh0p3Jo1+01eY6gXesjykGw9y6/q2V/McNoNpaMt1 felixheilmeyer@felixs-mbp
+hostname: tntrancher1
+rancher:
+  network:
+    interfaces:
+      eth0:
+        address: 132.230.176.70/28
+        gateway: 132.230.176.78
+        mtu: 1500
+        dhcp: false
+    dns:
+      nameservers:
+        - 132.230.200.200
+        - 132.230.201.111
