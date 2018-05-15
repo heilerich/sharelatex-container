@@ -20,11 +20,11 @@ sharelatex:
         SHARELATEX_APP_NAME: TNT ShareLaTeX
 
         ## Set for SSL via nginx-proxy
-        VIRTUAL_HOST: latex.fehe.eu
-        LETSENCRYPT_HOST: latex.fehe.eu
+        VIRTUAL_HOST: latex.tnt.uni-freiburg.de
+        LETSENCRYPT_HOST: latex.tnt.uni-freiburg.de
         LETSENCRYPT_EMAIL: science@fehe.eu
 
-        SHARELATEX_SITE_URL: https://latex.fehe.eu
+        SHARELATEX_SITE_URL: https://latex.tnt.uni-freiburg.de
         SHARELATEX_NAV_TITLE: TNT ShareLaTeX
         SHARELATEX_HEADER_IMAGE_URL: https://www.zuv.uni-freiburg.de/service/cd/cd-manual/images/logo/logo/logo-grundversion-01.png
         SHARELATEX_ADMIN_EMAIL: science@fehe.eu
